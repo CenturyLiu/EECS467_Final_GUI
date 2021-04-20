@@ -1,0 +1,135 @@
+[KneePitch]
+lower_limit = -0.514872
+upper_limit = 0.514872
+[HipPitch]
+lower_limit = -1.03847
+upper_limit = 1.03847
+[HipRoll]
+lower_limit = -0.514872
+upper_limit = 0.514872
+[HeadYaw]
+lower_limit = -2.08567
+upper_limit = 2.08567
+[HeadPitch]
+lower_limit = -0.706858
+upper_limit = 0.637045
+[LShoulderPitch]
+lower_limit = -2.08567
+upper_limit = 2.08567
+[LShoulderRoll]
+lower_limit = 0.00872665
+upper_limit = 1.56207
+[LElbowYaw]
+lower_limit = -2.08567
+upper_limit = 2.08567
+[LElbowRoll]
+lower_limit = -1.56207
+upper_limit = -0.00872665
+[LWristYaw]
+lower_limit = -1.82387
+upper_limit = 1.82387
+[LHand]
+lower_limit = 0.02
+upper_limit = 0.98
+[LFinger21]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger22]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger23]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger11]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger12]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger13]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger41]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger42]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger43]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger31]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger32]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LFinger33]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LThumb1]
+lower_limit = 0.0
+upper_limit = 0.872665
+[LThumb2]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RShoulderPitch]
+lower_limit = -2.08567
+upper_limit = 2.08567
+[RShoulderRoll]
+lower_limit = -1.56207
+upper_limit = -0.00872665
+[RElbowYaw]
+lower_limit = -2.08567
+upper_limit = 2.08567
+[RElbowRoll]
+lower_limit = 0.00872665
+upper_limit = 1.56207
+[RWristYaw]
+lower_limit = -1.82387
+upper_limit = 1.82387
+[RHand]
+lower_limit = 0.02
+upper_limit = 0.98
+[RFinger41]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger42]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger43]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger31]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger32]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger33]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger21]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger22]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger23]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger11]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger12]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RFinger13]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RThumb1]
+lower_limit = 0.0
+upper_limit = 0.872665
+[RThumb2]
+lower_limit = 0.0
+upper_limit = 0.872665

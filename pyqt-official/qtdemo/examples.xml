@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <categories name="PyQt Examples">
-  <category dirname="tutorials/addressbook" name="Main page">
-    <example filename="part1" name="Welcome page" image="pepper.jpg" />
-    <example filename="part2" name="Calibration" image="addressbook-tutorial-part2-add-contact.png" />
+  <category dirname="scripts/joint_mover" name="Main page">
+    <example filename="test_naive_search" name="Welcome page" image="pepper.jpg" />
+    <example filename="calibrateStartPose" name="Calibration" image="addressbook-tutorial-part2-add-contact.png" />
     <example filename="part3" name="Dance tutorial" image="addressbook-tutorial-part3-screenshot.png" />
     <example filename="part4" name="Free style" image="addressbook-tutorial-screenshot.png" />
+    <example filename="part4" name="Replay" image="addressbook-tutorial-screenshot.png" />
     <!-- <example filename="part5" name="Part 5" image="addressbook-tutorial-part5-screenshot.png" />
     <example filename="part6" name="Part 6" image="addressbook-tutorial-part6-screenshot.png" />
     <example filename="part7" name="Part 7" image="addressbook-tutorial-part7-screenshot.png" /> -->
