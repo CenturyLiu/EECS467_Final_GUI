@@ -474,7 +474,7 @@ class SingleRobot(object):
 
         # self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["BaseRotate"])
 
-        print("moveto command:", x, y, theta)
+        # print("moveto command:", x, y, theta)
         self.robot_virtual.moveTo(x, y, theta, frame=self.robot_virtual.FRAME_WORLD, _async=True)
 
         return [x, y, theta]
