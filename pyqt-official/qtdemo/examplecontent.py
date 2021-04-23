@@ -95,7 +95,8 @@ class ExampleContent(DemoItem):
 
         #description = Colors.contentColor + "Could not load description. Ensure that the documentation for Qt is built."
         print('paragraph length: %d'%(len(paragraphs)))
-        description = Colors.contentColor + "Welcome to Teach Robot to Dance! <br><br> Team members: Shiji Liu, Shaoxiong Yao, Jinze Liu, Xu Han"
+        # description = Colors.contentColor + "Welcome to Teach Robot to Dance! <br><br> Team members: Shiji Liu, Shaoxiong Yao, Jinze Liu, Xu Han"
+        description = Colors.contentColor 
         
         for p in paragraphs:
             description = self.extractTextFromParagraph(p)

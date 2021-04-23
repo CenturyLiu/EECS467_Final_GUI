@@ -38,12 +38,6 @@ def draw_skeleton(skeletonData, ax=None):
             jointPosition1 = skeletonData[jointName1]
             jointPosition2 = skeletonData[jointName2]
 
-            # before data transformation
-            # ax.plot([-jointPosition1[2], -jointPosition2[2]],
-            #         [-jointPosition1[0], -jointPosition2[0]],
-            #         [jointPosition1[1], jointPosition2[1]],
-            #         color='r', linestyle='-', linewidth=2, marker='o', markersize=5)
-
             # after data transformation
             ax.plot([jointPosition1[0], jointPosition2[0]],
                     [jointPosition1[1], jointPosition2[1]],
@@ -52,10 +46,25 @@ def draw_skeleton(skeletonData, ax=None):
     
     return ax 
 
+def draw_move_direction(hipPosition, ax=None):
+    if ax is None:
+        fig = plt.figure(frameon=False)
+        ax = fig.add_subplot(111, projection='3d')
+    else:
+        ax = ax
+
+    x, y, z = hipPosition
+    x0, y0, z0 = -3, 0, 0
+    u, v, w = x0-x, y0-y, z0-z
+    ax.quiver(x, y, z, u, v, w, length=1.0)
+
+    return ax
+            
+
 if __name__ == '__main__':
     
     collector = kinectServer()
-    fig = plt.figure()
+    fig = plt.figure(figsize=(17, 15))
     ax = plt.axes(projection='3d', )
 
     try:
@@ -77,9 +86,11 @@ if __name__ == '__main__':
 
             hipXYPosition = np.array(lastSkeletonDict["HipCenter"][:2]) 
             hipXYTargetPosition = np.array([-3, 0])          
-            if np.linalg.norm(hipXYPosition - hipXYTargetPosition) < 0.5:
+            if np.linalg.norm(hipXYPosition - hipXYTargetPosition) < r:
+                print("Reached target position")
                 break
-
+            
+            draw_move_direction(lastSkeletonDict["HipCenter"], ax=ax)
             draw_skeleton(lastSkeletonDict, ax=ax)
             ax.set_xlim(-4, -2)
             ax.set_ylim(-1, 1)
@@ -92,5 +103,5 @@ if __name__ == '__main__':
 
     except Exception:
         collector.stopServer()
-        print("Stopped, received keyboad interrupt")
+        print("Stopped, received interrupt")
     

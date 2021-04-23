@@ -48,7 +48,7 @@ if __name__ == "__main__":
     chosen_pose_list = smooth_angle_list(joint_value_matrix)   
     print("number of chosen:", len(chosen_pose_list)) 
     
-    time.sleep(10)
+    time.sleep(3)
 
     speed_fraction = 0.5
 

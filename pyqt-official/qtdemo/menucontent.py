@@ -118,7 +118,8 @@ class MenuContentItem(DemoItem):
         self.heading = HeadingItem(self.name, self)
         para1 = self.loadDescription(0, 1)
         if not para1:
-            para1 = Colors.contentColor + "Could not load description. Ensure that the documentation for Qt is built."
+            # para1 = Colors.contentColor + "Could not load description. Ensure that the documentation for Qt is built."
+            para1 = Colors.contentColor + "Welcome to Teach Robot to Dance! <br><br> Team members: Shiji Liu, Shaoxiong Yao, Jinze Liu, Xu Han"            
         bgcolor = Colors.sceneBg1.darker(200)
         bgcolor.setAlpha(100)
         self.description1 = DemoTextItem(para1, Colors.contentFont(),

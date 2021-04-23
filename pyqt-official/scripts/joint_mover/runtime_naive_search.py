@@ -46,7 +46,7 @@ def runtime_search():
     single_robot.setPosture()
     time.sleep(5.0)
     
-    collection_length = 100
+    collection_length = 1000
     frame_count = 0
 
     joint_name_list = [ "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll",
