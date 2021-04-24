@@ -55,7 +55,21 @@ def draw_move_direction(hipPosition, ax=None):
 
     x, y, z = hipPosition
     x0, y0, z0 = -3, 0, 0
+
     u, v, w = x0-x, y0-y, z0-z
+    instructStr = "Please move "
+    if u < 0:
+        instructStr += "back: "
+    else:
+        instructStr += "forward: "
+    instructStr += f"{abs(u):.2f}m, "
+
+    if v < 0:
+        instructStr += "right: "
+    else:
+        instructStr += "left: "
+    instructStr += f"{abs(v):.2f}m"
+    ax.set_title(instructStr, fontsize=20)
     ax.quiver(x, y, z, u, v, w, length=1.0)
 
     return ax
@@ -64,7 +78,7 @@ def draw_move_direction(hipPosition, ax=None):
 if __name__ == '__main__':
     
     collector = kinectServer()
-    fig = plt.figure(figsize=(17, 15))
+    fig = plt.figure(figsize=(15, 12))
     ax = plt.axes(projection='3d', )
 
     try:
@@ -84,6 +98,9 @@ if __name__ == '__main__':
             z = r*np.cos(v)
             ax.plot_wireframe(x, y, z, color="b")
 
+            if not lastSkeletonDict:
+                continue
+
             hipXYPosition = np.array(lastSkeletonDict["HipCenter"][:2]) 
             hipXYTargetPosition = np.array([-3, 0])          
             if np.linalg.norm(hipXYPosition - hipXYTargetPosition) < r:
@@ -101,7 +118,7 @@ if __name__ == '__main__':
         # stop server when program exit
         collector.stopServer()
 
-    except Exception:
+    except KeyboardInterrupt:
         collector.stopServer()
         print("Stopped, received interrupt")
     
