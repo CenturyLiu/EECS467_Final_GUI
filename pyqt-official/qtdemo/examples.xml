@@ -4,7 +4,7 @@
     <example filename="test_naive_search" name="Welcome page" image="welcome.png" />
     <example filename="calibrateStartPose" name="Calibration" image="calibrate.png" />
     <example filename="dance_tutorial" name="Dance tutorial" image="tutorial.png" />
-    <example filename="runtime_naive_search" name="Free style" image="freestyle.png" />
+    <example filename="freestyle" name="Free style" image="freestyle.png" />
     <example filename="large_motion" name="Replay" image="replay.png" />
   </category>
 </categories>

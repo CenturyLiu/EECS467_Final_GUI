@@ -454,7 +454,7 @@ class SingleRobot(object):
         Hip_Head_vec = (key_points_pos_dict["Neck"] - key_points_pos_dict["Hip"]).reshape(-1, 1)
         angle_dict["Hip"] = self.base_coodinate @ Hip_Head_vec
         angle_dict["Hip"] = angle_dict["Hip"].reshape(-1)/norm(angle_dict["Hip"])
-        self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
+        # self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
         
         return angle_dict
     
@@ -761,8 +761,8 @@ if __name__ == "__main__":
     
     single_robot = SingleRobot(simulation_manager, client, save_joint_limits = False)
 
-    with open('kinectData/skeletonTest.json', 'r') as f:
-        skeletonDataList = json.load(f)
+    # with open('kinectData/skeletonTest.json', 'r') as f:
+    #     skeletonDataList = json.load(f)
 
     # plot skeleton
     # for skeletonData in skeletonDataList:
@@ -784,7 +784,8 @@ if __name__ == "__main__":
         
         # joint_name = ['LShoulderPitch', 'LShoulderRoll','LElbowYaw', 'LElbowRoll', 'LWristYaw', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw', 'RElbowRoll', 'RWristYaw']
         
-        joint_name = ['HipPitch', 'HipRoll']
+        # joint_name = ['HipPitch', 'HipRoll']
+        joint_name = ['LShoulderPitch']
 
         # joint_name = ['LShoulderPitch', 'LShoulderRoll',
         #               'LElbowYaw', 'LElbowRoll', 
@@ -802,7 +803,7 @@ if __name__ == "__main__":
             
         single_robot.setPosture()
         
-        time.sleep(5.0)
+        time.sleep(10.0)
         
         while True:
             #single_robot.joint_control(joint_name_list,joint_value_list,speed_percentage_list)
@@ -829,7 +830,7 @@ if __name__ == "__main__":
             for name in joint_name:
                 
                 joint_values = np.linspace(float(joint_limits[name]['lower_limit']), 
-                                           float(joint_limits[name]['upper_limit']), 20)
+                                           float(joint_limits[name]['upper_limit']), 3)
                 print("---")
                 print("Joint: %s"%(name))
                 for value in joint_values:
@@ -857,7 +858,7 @@ if __name__ == "__main__":
                 key_points_pos_dict = fake_human_keypoints(joint_name_pos_dict)
                 single_robot.get_angles_from_keypoints(key_points_pos_dict)
                 
-                time.sleep(2.0)
+                time.sleep(10.0)
 
             
             pass
