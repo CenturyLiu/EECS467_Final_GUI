@@ -15,6 +15,7 @@ import time
 import json
 import matplotlib.pyplot as plt
 import pybullet as p
+import copy
 from scipy.spatial.transform import Rotation
 from numpy.linalg import norm
 from math import atan2
@@ -454,7 +455,12 @@ class SingleRobot(object):
         Hip_Head_vec = (key_points_pos_dict["Neck"] - key_points_pos_dict["Hip"]).reshape(-1, 1)
         angle_dict["Hip"] = self.base_coodinate @ Hip_Head_vec
         angle_dict["Hip"] = angle_dict["Hip"].reshape(-1)/norm(angle_dict["Hip"])
-        # self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
+        #self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
+
+        # debug base coordinate
+        #local_base_origin = copy.deepcopy(self.base_origin)
+        #local_base_origin[0] += -1.0
+        self.debug_local_coordinate(key_points_pos_dict["Hip"],self.base_coodinate)
         
         return angle_dict
     
@@ -505,17 +511,20 @@ class SingleRobot(object):
         None.
 
         '''
+        # color for skeleton
+        skeleton_color = [0,1,1]
+
         p.removeAllUserDebugItems()
         # hip to neck
-        p.addUserDebugLine(key_points_pos_dict['Hip'],key_points_pos_dict['Neck'], [1,0,0], 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Hip'],key_points_pos_dict['Neck'], skeleton_color, 3.0)
         
         # neck to arms
-        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['LShoulder'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['LShoulder'],key_points_pos_dict['LElbow'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['LElbow'],key_points_pos_dict['LWrist'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['RShoulder'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['RShoulder'],key_points_pos_dict['RElbow'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['RElbow'],key_points_pos_dict['RWrist'], [1,0,0], 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['LShoulder'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['LShoulder'],key_points_pos_dict['LElbow'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['LElbow'],key_points_pos_dict['LWrist'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['RShoulder'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['RShoulder'],key_points_pos_dict['RElbow'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['RElbow'],key_points_pos_dict['RWrist'], skeleton_color, 3.0)
         
         pass
     
