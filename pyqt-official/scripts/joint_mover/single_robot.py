@@ -48,7 +48,7 @@ def get_homogeneous_matrix(rotation, transformation):
 
 class SingleRobot(object):
     def __init__(self, simulation_manager, client, base_coordinate = np.eye(3), base_origin = np.array([0,0,0]),  
-                 robot_choice = 'pepper', save_joint_limits = False):
+                 robot_choice = 'pepper', save_joint_limits = False, draw_wrist_trajectory = False):
         '''
         
 
@@ -94,6 +94,15 @@ class SingleRobot(object):
         self.base_coodinate = base_coordinate
         self.angle_history_dict = { joint_name: [] 
                                     for joint_name in self.joint_names }
+
+
+        # store keypoints' world pose, used for debuging keypoint trajectory
+        self.keypoint_name_list = ['Hip','Neck','LShoulder','LElbow','LWrist','RShoulder','RElbow','RWrist','LHip','RHip','LKnee','RKnee','LAnkle','RAnkle'] 
+        self.keypoint_history_dict = {keypoint_name: [] 
+                                        for keypoint_name in self.keypoint_name_list}
+        self.draw_wrist_trajectory = draw_wrist_trajectory
+        self.draw_trajectory_count = 0
+        self.draw_trajectory_limit = 20 # plot every draw_trajectory_limit iterations
         
         # debug items
         self.debug_id = []
@@ -162,6 +171,7 @@ class SingleRobot(object):
                 valid_joint_value_list.append(joint_value_list[ii])
                 valid_speed_percentage_list.append(speed_percentage_list[ii])
         
+        '''
         filtered_valid_value_list = []
         for joint_name, joint_value in zip(valid_joint_name_list, valid_joint_value_list):
             self.angle_history_dict[joint_name].append(joint_value)
@@ -176,7 +186,7 @@ class SingleRobot(object):
                 # print("filter value:", filtered_value)
             else:
                 filtered_valid_value_list.append(joint_value)
-        
+        '''
         if valid_joint_name_list:
             self.robot_virtual.setAngles(valid_joint_name_list, valid_joint_value_list, valid_speed_percentage_list)
         
@@ -367,6 +377,9 @@ class SingleRobot(object):
         # debug keypoints
         self.debug_keypoints(key_points_pos_dict)
 
+        # store keypoints
+        self.store_keypoints(key_points_pos_dict)
+
         angle_dict = {}
         
         # get local coordinate systems for joints
@@ -461,6 +474,12 @@ class SingleRobot(object):
         #local_base_origin = copy.deepcopy(self.base_origin)
         #local_base_origin[0] += -1.0
         self.debug_local_coordinate(key_points_pos_dict["Hip"],self.base_coodinate)
+
+        # draw trajectory of right wrist
+        if self.draw_wrist_trajectory and self.draw_trajectory_count == self.draw_trajectory_limit:
+            self.debug_keypoint_trajectory(['RWrist'])
+            self.draw_trajectory_count = 0
+        self.draw_trajectory_count += 1
         
         return angle_dict
     
@@ -484,6 +503,29 @@ class SingleRobot(object):
         self.robot_virtual.moveTo(x, y, theta, frame=self.robot_virtual.FRAME_WORLD, _async=True)
 
         return [x, y, theta]
+
+    def store_keypoints(self, key_points_pos_dict):
+        for name in self.keypoint_name_list:
+            self.keypoint_history_dict[name].append(key_points_pos_dict[name])
+
+    def debug_keypoint_trajectory(self, key_points_names):
+        '''
+        Parameters
+        ----------
+        key_points_names : list
+            a list of key points that we want to debug
+        '''
+
+        trajectory_color = [1,1,0]
+
+        # iterate through each key points names, draw full trajectory
+        for name in key_points_names:
+            trajectory_array = self.keypoint_history_dict[name]
+            if len(trajectory_array) >= 2:
+                for ii in range(1,len(trajectory_array)):
+                    p.addUserDebugLine(trajectory_array[ii-1],trajectory_array[ii], trajectory_color, 3.0)
+
+        pass
 
     
     def debug_keypoints(self, key_points_pos_dict):
