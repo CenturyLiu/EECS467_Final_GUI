@@ -515,12 +515,13 @@ class SingleRobot(object):
         key_points_names : list
             a list of key points that we want to debug
         '''
-
+        print("debug_keypoint_trajectory")
         trajectory_color = [1,1,0]
 
         # iterate through each key points names, draw full trajectory
         for name in key_points_names:
             trajectory_array = self.keypoint_history_dict[name]
+            print("length: %d"%(len(trajectory_array)))
             if len(trajectory_array) >= 2:
                 for ii in range(1,len(trajectory_array)):
                     p.addUserDebugLine(trajectory_array[ii-1],trajectory_array[ii], trajectory_color, 3.0)
@@ -742,6 +743,12 @@ def fake_human_keypoints(joint_name_pos_dict):
     key_points_pos_dict['RElbow'] = joint_name_pos_dict['RElbowRoll']
     key_points_pos_dict['RWrist'] = joint_name_pos_dict['RWristYaw']
     
+    key_points_pos_dict['LHip']     = []
+    key_points_pos_dict['RHip']     = []
+    key_points_pos_dict['LKnee']    = []
+    key_points_pos_dict['RKnee']    = []
+    key_points_pos_dict['LAnkle']   = []
+    key_points_pos_dict['RAnkle']   = []
     
     return key_points_pos_dict
 
