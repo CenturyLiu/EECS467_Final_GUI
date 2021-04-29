@@ -166,8 +166,14 @@ if __name__ == "__main__":
         temp_dict['angle_list'] = current_joint_angle_list
         chosen_pose_list.append(temp_dict)
 
+        #input()
+
         # time.sleep(0.1)
     
+    single_robot.debug_keypoint_trajectory(['RWrist'])
+    input()
+
+
     num_points = len(chosen_pose_list)
     joint_value_matrix = [x["angle_list"] for x in chosen_pose_list]
     joint_value_matrix = np.array(joint_value_matrix)

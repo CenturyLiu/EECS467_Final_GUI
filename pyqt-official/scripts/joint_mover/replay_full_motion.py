@@ -4,32 +4,10 @@ import numpy as np
 import pybullet as p
 from qibullet import SimulationManager
 from naive_search_joint_angle import jointAngleDataBase
-from single_robot import SingleRobot, extract_human_keypoints 
+from single_robot import SingleRobot, extract_human_keypoints , fake_human_keypoints
 from calibrate_utils import get_human_base_link
+from large_motion import smooth_angle_list
 
-def smooth_angle_list(joint_value_matrix):
-
-    h = 1
-    # derivative of the 3rd term to last 3rd term
-    derivative = 1 / (12 * h) * (joint_value_matrix[0:-4,:] 
-                                 - 8 * joint_value_matrix[1:-3,:] 
-                                 + 8 * joint_value_matrix[3:-1,:]
-                                 - joint_value_matrix[4:,:])
-
-    # choose terms
-    selected_poses = [ joint_value_matrix[0, :] ]
-
-    for ii in range(0,derivative.shape[0]):
-
-        joint_value_list = joint_value_matrix[ii + 2, :]
-        prev_joint_value_list = selected_poses[-1]
-        unmoved_joints = np.abs(joint_value_list - prev_joint_value_list) < 0.5
-
-        if max(np.abs(derivative[ii,:])) > 0.4 or not unmoved_joints.all():
-            joint_value_list[unmoved_joints] = prev_joint_value_list[unmoved_joints]
-            selected_poses.append(joint_value_list)
-
-    return selected_poses
 
 
 if __name__ == "__main__":
@@ -45,7 +23,12 @@ if __name__ == "__main__":
     joint_name_list = [ "LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll",
                         "RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll",
                         "HipPitch", "HipRoll" ]
-    chosen_pose_list = smooth_angle_list(joint_value_matrix)   
+
+    motion_length = 100
+    chosen_pose_list = smooth_angle_list(joint_value_matrix[:motion_length])   
+
+
+    # chosen_pose_list = joint_value_matrix[:motion_length]
     print("number of chosen:", len(chosen_pose_list)) 
     
     time.sleep(3)
@@ -54,6 +37,15 @@ if __name__ == "__main__":
 
     for pose in chosen_pose_list:
 
+        # for debug use
+        # get robot joints poses, create fake skeleton
+        joint_name_pos_dict = single_robot.get_robot_joint_world_pose()
+
+        # calculate and debug local coordinate systems
+        key_points_pos_dict = fake_human_keypoints(joint_name_pos_dict)
+        angle_dict = single_robot.get_angles_from_keypoints(key_points_pos_dict)
+
+
         single_robot.joint_control(
             joint_name_list, pose, 
             speed_fraction * np.ones(pose.shape))
@@ -61,6 +53,6 @@ if __name__ == "__main__":
         time.sleep(0.1)
     
     single_robot.debug_keypoint_trajectory(['RWrist'])
-
+    input()
     
     

@@ -11,14 +11,20 @@ import json
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 
+# bonePairList = [
+#     ["LHip", "LKnee"], ["RHip", "RKnee"], 
+#     ["HipCenter", "LHip"], ["HipCenter", "RHip"],
+#     ["HipCenter", "ShoulderCenter"], ["ShoulderCenter", "Head"], 
+#     ["ShoulderCenter", "LShoulder"], ["LShoulder", "LElbow"], ["LElbow", "LWrist"], 
+#     ["ShoulderCenter", "RShoulder"], ["RShoulder", "RElbow"], ["RElbow", "RWrist"]
+# ]
+
+
 bonePairList = [
-    ["LHip", "LKnee"], ["RHip", "RKnee"], 
-    ["HipCenter", "LHip"], ["HipCenter", "RHip"],
     ["HipCenter", "ShoulderCenter"], ["ShoulderCenter", "Head"], 
     ["ShoulderCenter", "LShoulder"], ["LShoulder", "LElbow"], ["LElbow", "LWrist"], 
     ["ShoulderCenter", "RShoulder"], ["RShoulder", "RElbow"], ["RElbow", "RWrist"]
 ]
-
 def draw_skeleton(skeletonData, ax=None):
     if ax is None:
         fig = plt.figure(frameon=False)

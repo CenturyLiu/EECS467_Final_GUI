@@ -15,6 +15,7 @@ import time
 import json
 import matplotlib.pyplot as plt
 import pybullet as p
+import copy
 from scipy.spatial.transform import Rotation
 from numpy.linalg import norm
 from math import atan2
@@ -47,7 +48,7 @@ def get_homogeneous_matrix(rotation, transformation):
 
 class SingleRobot(object):
     def __init__(self, simulation_manager, client, base_coordinate = np.eye(3), base_origin = np.array([0,0,0]),  
-                 robot_choice = 'pepper', save_joint_limits = False):
+                 robot_choice = 'pepper', save_joint_limits = False, draw_wrist_trajectory = False):
         '''
         
 
@@ -93,6 +94,15 @@ class SingleRobot(object):
         self.base_coodinate = base_coordinate
         self.angle_history_dict = { joint_name: [] 
                                     for joint_name in self.joint_names }
+
+
+        # store keypoints' world pose, used for debuging keypoint trajectory
+        self.keypoint_name_list = ['Hip','Neck','LShoulder','LElbow','LWrist','RShoulder','RElbow','RWrist','LHip','RHip','LKnee','RKnee','LAnkle','RAnkle'] 
+        self.keypoint_history_dict = {keypoint_name: [] 
+                                        for keypoint_name in self.keypoint_name_list}
+        self.draw_wrist_trajectory = draw_wrist_trajectory
+        self.draw_trajectory_count = 0
+        self.draw_trajectory_limit = 20 # plot every draw_trajectory_limit iterations
         
         # debug items
         self.debug_id = []
@@ -161,6 +171,7 @@ class SingleRobot(object):
                 valid_joint_value_list.append(joint_value_list[ii])
                 valid_speed_percentage_list.append(speed_percentage_list[ii])
         
+        '''
         filtered_valid_value_list = []
         for joint_name, joint_value in zip(valid_joint_name_list, valid_joint_value_list):
             self.angle_history_dict[joint_name].append(joint_value)
@@ -175,7 +186,7 @@ class SingleRobot(object):
                 # print("filter value:", filtered_value)
             else:
                 filtered_valid_value_list.append(joint_value)
-        
+        '''
         if valid_joint_name_list:
             self.robot_virtual.setAngles(valid_joint_name_list, valid_joint_value_list, valid_speed_percentage_list)
         
@@ -366,6 +377,9 @@ class SingleRobot(object):
         # debug keypoints
         self.debug_keypoints(key_points_pos_dict)
 
+        # store keypoints
+        self.store_keypoints(key_points_pos_dict)
+
         angle_dict = {}
         
         # get local coordinate systems for joints
@@ -454,7 +468,18 @@ class SingleRobot(object):
         Hip_Head_vec = (key_points_pos_dict["Neck"] - key_points_pos_dict["Hip"]).reshape(-1, 1)
         angle_dict["Hip"] = self.base_coodinate @ Hip_Head_vec
         angle_dict["Hip"] = angle_dict["Hip"].reshape(-1)/norm(angle_dict["Hip"])
-        # self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
+        #self.debug_relative_orientation(np.array([0.5, 0, 1]), angle_dict["Hip"])
+
+        # debug base coordinate
+        #local_base_origin = copy.deepcopy(self.base_origin)
+        #local_base_origin[0] += -1.0
+        self.debug_local_coordinate(key_points_pos_dict["Hip"],self.base_coodinate)
+
+        # draw trajectory of right wrist
+        if self.draw_wrist_trajectory and self.draw_trajectory_count == self.draw_trajectory_limit:
+            self.debug_keypoint_trajectory(['RWrist'])
+            self.draw_trajectory_count = 0
+        self.draw_trajectory_count += 1
         
         return angle_dict
     
@@ -478,6 +503,30 @@ class SingleRobot(object):
         self.robot_virtual.moveTo(x, y, theta, frame=self.robot_virtual.FRAME_WORLD, _async=True)
 
         return [x, y, theta]
+
+    def store_keypoints(self, key_points_pos_dict):
+        for name in self.keypoint_name_list:
+            self.keypoint_history_dict[name].append(key_points_pos_dict[name])
+
+    def debug_keypoint_trajectory(self, key_points_names):
+        '''
+        Parameters
+        ----------
+        key_points_names : list
+            a list of key points that we want to debug
+        '''
+        print("debug_keypoint_trajectory")
+        trajectory_color = [1,1,0]
+
+        # iterate through each key points names, draw full trajectory
+        for name in key_points_names:
+            trajectory_array = self.keypoint_history_dict[name]
+            print("length: %d"%(len(trajectory_array)))
+            if len(trajectory_array) >= 2:
+                for ii in range(1,len(trajectory_array)):
+                    p.addUserDebugLine(trajectory_array[ii-1],trajectory_array[ii], trajectory_color, 3.0)
+
+        pass
 
     
     def debug_keypoints(self, key_points_pos_dict):
@@ -505,17 +554,20 @@ class SingleRobot(object):
         None.
 
         '''
+        # color for skeleton
+        skeleton_color = [0,1,1]
+
         p.removeAllUserDebugItems()
         # hip to neck
-        p.addUserDebugLine(key_points_pos_dict['Hip'],key_points_pos_dict['Neck'], [1,0,0], 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Hip'],key_points_pos_dict['Neck'], skeleton_color, 3.0)
         
         # neck to arms
-        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['LShoulder'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['LShoulder'],key_points_pos_dict['LElbow'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['LElbow'],key_points_pos_dict['LWrist'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['RShoulder'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['RShoulder'],key_points_pos_dict['RElbow'], [1,0,0], 3.0)
-        p.addUserDebugLine(key_points_pos_dict['RElbow'],key_points_pos_dict['RWrist'], [1,0,0], 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['LShoulder'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['LShoulder'],key_points_pos_dict['LElbow'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['LElbow'],key_points_pos_dict['LWrist'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['Neck'],key_points_pos_dict['RShoulder'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['RShoulder'],key_points_pos_dict['RElbow'], skeleton_color, 3.0)
+        p.addUserDebugLine(key_points_pos_dict['RElbow'],key_points_pos_dict['RWrist'], skeleton_color, 3.0)
         
         pass
     
@@ -691,6 +743,12 @@ def fake_human_keypoints(joint_name_pos_dict):
     key_points_pos_dict['RElbow'] = joint_name_pos_dict['RElbowRoll']
     key_points_pos_dict['RWrist'] = joint_name_pos_dict['RWristYaw']
     
+    key_points_pos_dict['LHip']     = []
+    key_points_pos_dict['RHip']     = []
+    key_points_pos_dict['LKnee']    = []
+    key_points_pos_dict['RKnee']    = []
+    key_points_pos_dict['LAnkle']   = []
+    key_points_pos_dict['RAnkle']   = []
     
     return key_points_pos_dict
 
